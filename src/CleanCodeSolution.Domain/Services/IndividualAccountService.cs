@@ -19,7 +19,12 @@ namespace CleanCodeSolution.Domain.Services
     private readonly IAccountRepo accountRepo;
     private readonly IMediator mediator;
 
-    public IndividualAccountService(IAccountRepo accountRepo, IMediator mediator)
+        public IndividualAccountService()
+        {
+            
+        }
+
+        public IndividualAccountService(IAccountRepo accountRepo, IMediator mediator)
     {
       this.accountRepo = accountRepo;
       this.mediator = mediator;
