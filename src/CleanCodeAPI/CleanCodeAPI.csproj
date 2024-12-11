@@ -13,4 +13,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CleanCodeSolution.Application\CleanCodeSolution.Application.csproj" />
+    <ProjectReference Include="..\CleanCodeSolution.Domain\CleanCodeSolution.Domain.csproj" />
+    <ProjectReference Include="..\CleanCodeSolution.Infrastructure\CleanCodeSolution.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

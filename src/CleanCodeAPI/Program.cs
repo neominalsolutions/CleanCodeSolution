@@ -5,6 +5,12 @@ using CleanCodeAPI.Exceptions;
 using CleanCodeAPI.Services;
 using CleanCodeAPI.Aspects;
 using Autofac.Extras.DynamicProxy;
+using CleanCodeSolution.Domain.Services;
+using CleanCodeSolution.Domain.Repositories;
+using CleanCodeSolution.Infrastructure.Repositories;
+using System.Reflection;
+using CleanCodeSolution.Application.Handlers;
+using CleanCodeSolution.Domain.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +25,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<RequestInterceptionAttribute>();
 //builder.Services.AddScoped<TestService>();
 
+// Bir Interface birden fazla sýnýftan türetildiði takdirde içerdek bu davranýþ deðiþikliðini uygulamak için keyedScoped servislerden yararlanýrýz.
+builder.Services.AddKeyedScoped<IAccountService, IndividualAccountService>("bireysel");
+builder.Services.AddKeyedScoped<IAccountService, CorporateAccountService>("kurumsal");
+
+builder.Services.AddScoped<IAccountRepo,AccountRepo>();
+
+// CloseAccountRequestHandler bu tipte olan assemby projeyi reflection ile load et.
+var applicationDll = Assembly.GetAssembly(typeof(CloseAccountRequestHandler));
+var domainDll = Assembly.GetAssembly(typeof(AccountClosedHandler));
+
+ArgumentNullException.ThrowIfNull(applicationDll);
+ArgumentNullException.ThrowIfNull(domainDll);
+
+// Mediator Handlerslarýn çalýþmasý için IoC üzerine register edilmesi lazým
+builder.Services.AddMediatR(config =>
+{
+  config.RegisterServicesFromAssemblies(applicationDll, domainDll);
+});
 
 // Autofac Aspect Registeration AutoFac Module 
 
